@@ -1,4 +1,5 @@
-import { useAppStore, Theme } from '../store/useAppStore'
+import { useAppStore } from '../store/useAppStore'
+import type { Theme } from '../types'
 import { useTranslation } from 'react-i18next'
 import { useEffect } from 'react'
 

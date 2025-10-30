@@ -1,4 +1,5 @@
-import { useAppStore, Language } from '../store/useAppStore'
+import { useAppStore } from '../store/useAppStore'
+import type { Language } from '../types'
 
 const languages: { code: Language; label: string }[] = [
   { code: 'en', label: 'English' },

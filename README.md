@@ -14,8 +14,6 @@
 ![Cloudflare Workers](https://img.shields.io/badge/Cloudflare%20Workers-optional-F38020?logo=cloudflareworkers&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-バッジは [Shields.io](https://shields.io/) を使用しています。
-
 ## 機能
 
 - **一括変換**: 複数ファイルをまとめてドラッグ&ドロップで投入
@@ -34,7 +32,6 @@
 - 画像処理: OffscreenCanvas 変換 + `@jsquash/avif` (WASM) + `pica` リサイズ
 - 圧縮/配布: `fflate` によるZIP生成
 - PWA: `vite-plugin-pwa`
-- オプションのバックエンド: Cloudflare Workers（AVIFエンコードのオフロード）
 
 ## はじめに
 

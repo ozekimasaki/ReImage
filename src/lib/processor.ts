@@ -19,7 +19,7 @@ async function processSingleImage(fileId: string) {
 
     // 画像読み込み
     state.updateFile(fileId, { progress: 10 })
-    const { imageBitmap, width: originalWidth, height: originalHeight } =
+    const { imageBitmap } =
       await loadImageWithOrientation(file.file)
 
     // 出力形式を決定

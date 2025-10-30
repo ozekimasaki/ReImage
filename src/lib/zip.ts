@@ -37,7 +37,7 @@ export async function zipFiles(files: ImageFile[]) {
         return
       }
 
-      const blob = new Blob([data], { type: 'application/zip' })
+      const blob = new Blob([data as BlobPart], { type: 'application/zip' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url

@@ -27,27 +27,21 @@ async function encodeAVIFWithJSSquash(
       throw new Error('AVIFエンコード結果が空です')
     }
     
-    // @jsquash/avifのencodeはArrayBufferを返すが、念のため型チェック
+    // @jsquash/avifのencodeはArrayBufferまたはUint8Arrayを返す
     if (encoded instanceof ArrayBuffer) {
       if (encoded.byteLength === 0) {
         throw new Error('AVIFエンコード結果が空です')
       }
       return encoded
-    } else if (encoded instanceof Uint8Array) {
-      // Uint8Arrayの場合は、正しい範囲のArrayBufferを返す
-      if (encoded.byteLength === 0) {
-        throw new Error('AVIFエンコード結果が空です')
-      }
-      // バッファ全体がデータの場合はそのまま、そうでない場合はスライス
-      if (encoded.byteOffset === 0 && encoded.byteLength === encoded.buffer.byteLength) {
-        return encoded.buffer
-      } else {
-        // バッファの一部を参照している場合は、正しい範囲をコピー
-        return encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength)
-      }
-    } else {
-      throw new Error(`予期しないエンコード結果の型: ${typeof encoded}`)
     }
+    
+    // Uint8Arrayの場合は、新しいArrayBufferを作成して返す
+    const uint8Array = encoded as Uint8Array
+    if (uint8Array.byteLength === 0) {
+      throw new Error('AVIFエンコード結果が空です')
+    }
+    // 新しいUint8Arrayを作成して、そのbufferを返す（確実にArrayBufferを取得）
+    return new Uint8Array(uint8Array).buffer
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error)
     throw new Error(`AVIFエンコードに失敗しました: ${errorMessage}`)

@@ -90,16 +90,21 @@ export function FileList() {
                   </span>
                 </div>
                 
-                {/* 変換後のサムネイル表示 */}
-                {file.processed && thumbnailUrls.has(file.id) && (
-                  <div className="mb-2">
+                {/* 変換後のサムネイル表示（常に領域を確保） */}
+                <div className="mb-2 w-32 h-32 flex items-center justify-center border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-900">
+                  {file.processed && thumbnailUrls.has(file.id) ? (
                     <img
                       src={thumbnailUrls.get(file.id)}
                       alt={`${file.file.name} - ${t('fileList.converted')}`}
-                      className="w-32 h-32 object-contain border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-900"
+                      className="w-full h-full object-contain"
+                      loading="lazy"
                     />
-                  </div>
-                )}
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-600 text-xs">
+                      {file.status === 'processing' ? '処理中...' : ''}
+                    </div>
+                  )}
+                </div>
 
                 <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
                   <p>
@@ -107,39 +112,45 @@ export function FileList() {
                     {file.file.type})
                   </p>
 
-                  {file.status === 'processing' && (
-                    <div className="mt-2">
-                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                        <div
-                          className="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all"
-                          style={{ width: `${file.progress}%` }}
-                        />
-                      </div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        {file.progress}%
-                      </p>
-                    </div>
-                  )}
+                  {/* プログレスバー（常に領域を確保） */}
+                  <div className="mt-2 h-8">
+                    {file.status === 'processing' ? (
+                      <>
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                          <div
+                            className="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all"
+                            style={{ width: `${file.progress}%` }}
+                          />
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          {file.progress}%
+                        </p>
+                      </>
+                    ) : null}
+                  </div>
 
-                  {file.processed && (
-                    <>
-                      <p>
-                        {t('fileList.converted')}: {formatFileSize(file.processed.size)} (
-                        {file.processed.format.toUpperCase()})
-                      </p>
-                      <p>
-                        {file.processed.width} × {file.processed.height}px
-                      </p>
-                      <p className="text-green-600 dark:text-green-400 font-medium">
-                        {t('fileList.reductionRate')}:{' '}
-                        {calculateReductionRate(
-                          file.processed.originalSize,
-                          file.processed.size
-                        )}
-                        %
-                      </p>
-                    </>
-                  )}
+                  {/* 変換後情報（常に領域を確保） */}
+                  <div className="min-h-[4.5rem]">
+                    {file.processed && (
+                      <>
+                        <p>
+                          {t('fileList.converted')}: {formatFileSize(file.processed.size)} (
+                          {file.processed.format.toUpperCase()})
+                        </p>
+                        <p>
+                          {file.processed.width} × {file.processed.height}px
+                        </p>
+                        <p className="text-green-600 dark:text-green-400 font-medium">
+                          {t('fileList.reductionRate')}:{' '}
+                          {calculateReductionRate(
+                            file.processed.originalSize,
+                            file.processed.size
+                          )}
+                          %
+                        </p>
+                      </>
+                    )}
+                  </div>
 
                   {file.error && (
                     <p className="text-red-600 dark:text-red-400 text-xs mt-1">{file.error}</p>

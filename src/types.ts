@@ -5,6 +5,7 @@ export interface CodecOptions {
   nearLossless?: boolean
   speed?: number
   quantizer?: number
+  level?: number
 }
 
 export interface ResizeOptions {

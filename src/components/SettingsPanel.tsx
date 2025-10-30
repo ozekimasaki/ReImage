@@ -107,13 +107,13 @@ export function SettingsPanel() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-lg font-semibold mb-4">{t('settings.title')}</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">{t('settings.title')}</h2>
 
       <div className="space-y-6">
         {/* プリセット */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             {t('settings.preset')}
           </label>
           <div className="grid grid-cols-3 gap-2">
@@ -124,8 +124,8 @@ export function SettingsPanel() {
                   onClick={() => handlePresetChange(preset)}
                   className={`px-4 py-2 text-sm rounded transition-colors ${
                     settings.preset === preset
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-blue-600 dark:bg-blue-500 text-white'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                   }`}
                 >
                   {preset === 'high-quality'
@@ -141,7 +141,7 @@ export function SettingsPanel() {
 
         {/* 出力形式 */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             {t('settings.outputFormat')}
           </label>
           <select
@@ -149,7 +149,7 @@ export function SettingsPanel() {
             onChange={(e) =>
               setSettings({ outputFormat: e.target.value as OutputFormat })
             }
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="original">{t('settings.outputFormats.original')}</option>
             <option value="jpg">{t('settings.outputFormats.jpg')}</option>
@@ -161,7 +161,7 @@ export function SettingsPanel() {
 
         {/* 品質 */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             {t('settings.quality')}: {settings.quality}
           </label>
           <input
@@ -172,9 +172,9 @@ export function SettingsPanel() {
             onChange={(e) =>
               setSettings({ quality: parseInt(e.target.value, 10) })
             }
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
           />
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
             <span>{t('settings.qualityRange.low')}</span>
             <span>{t('settings.qualityRange.high')}</span>
           </div>
@@ -182,7 +182,7 @@ export function SettingsPanel() {
 
         {/* 最大長辺 */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             {t('settings.maxDimension')}
           </label>
           <input
@@ -194,9 +194,9 @@ export function SettingsPanel() {
             onChange={(e) =>
               setSettings({ maxDimension: parseInt(e.target.value, 10) })
             }
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {t('settings.maxDimensionHint')}
           </p>
         </div>
@@ -214,11 +214,11 @@ export function SettingsPanel() {
                 }
                 className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
               />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('settings.nearLossless')}
               </span>
             </label>
-            <p className="text-xs text-gray-500 mt-1 ml-6">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-6">
               {t('settings.nearLosslessHint')}
             </p>
           </div>

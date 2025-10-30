@@ -19,7 +19,7 @@ export function ProcessButton() {
   return (
     <div className="flex gap-4">
       {hasPending && (
-        <div className="flex-1 px-6 py-3 rounded-lg font-medium bg-blue-100 text-blue-800 text-center">
+        <div className="flex-1 px-6 py-3 rounded-lg font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-center">
           {t('processButton.processing')}
         </div>
       )}
@@ -27,7 +27,7 @@ export function ProcessButton() {
       {completedCount > 0 && (
         <button
           onClick={handleDownloadAll}
-          className="flex-1 px-6 py-3 rounded-lg font-medium bg-green-600 text-white hover:bg-green-700 transition-colors"
+          className="flex-1 px-6 py-3 rounded-lg font-medium bg-green-600 dark:bg-green-500 text-white hover:bg-green-700 dark:hover:bg-green-600 transition-colors"
         >
           {t('processButton.downloadZipCount', { count: completedCount })}
         </button>

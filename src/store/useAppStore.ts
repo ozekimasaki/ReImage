@@ -7,6 +7,8 @@ export type Preset = 'high-quality' | 'balanced' | 'high-compression'
 
 export type Language = 'en' | 'ja' | 'zh'
 
+export type Theme = 'light' | 'dark' | 'system'
+
 export interface ImageFile {
   id: string
   file: File
@@ -31,6 +33,7 @@ export interface AppSettings {
   maxDimension: number
   nearLossless?: boolean
   language?: Language
+  theme?: Theme
 }
 
 interface AppState {
@@ -42,6 +45,7 @@ interface AppState {
 
   setSettings: (settings: Partial<AppSettings>) => void
   setLanguage: (language: Language) => void
+  setTheme: (theme: Theme) => void
   addFiles: (files: File[]) => void
   removeFile: (id: string) => void
   updateFile: (id: string, updates: Partial<ImageFile>) => void
@@ -58,6 +62,7 @@ const defaultSettings: AppSettings = {
   maxDimension: 4096,
   nearLossless: false,
   language: 'en',
+  theme: 'system',
 }
 
 export const useAppStore = create<AppState>()(
@@ -85,6 +90,31 @@ export const useAppStore = create<AppState>()(
           }
           return {
             settings: { ...state.settings, language },
+          }
+        })
+      },
+
+      setTheme: (theme) => {
+        set((state) => {
+          if (typeof window !== 'undefined') {
+            const root = document.documentElement
+            const applyTheme = (actualTheme: 'light' | 'dark') => {
+              if (actualTheme === 'dark') {
+                root.classList.add('dark')
+              } else {
+                root.classList.remove('dark')
+              }
+            }
+
+            if (theme === 'system') {
+              const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+              applyTheme(mediaQuery.matches ? 'dark' : 'light')
+            } else {
+              applyTheme(theme)
+            }
+          }
+          return {
+            settings: { ...state.settings, theme },
           }
         })
       },

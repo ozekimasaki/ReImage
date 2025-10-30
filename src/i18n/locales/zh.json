@@ -87,6 +87,12 @@
   "footer": {
     "copyright": "ReImage. All rights reserved.",
     "version": "版本"
+  },
+  "theme": {
+    "light": "浅色",
+    "dark": "深色",
+    "system": "系统",
+    "selector": "主题选择器"
   }
 }
 

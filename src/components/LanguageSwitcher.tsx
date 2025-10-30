@@ -19,7 +19,7 @@ export function LanguageSwitcher() {
       <select
         value={currentLanguage}
         onChange={(e) => handleLanguageChange(e.target.value as Language)}
-        className="px-3 py-1.5 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer pr-8"
+        className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer pr-6 sm:pr-8"
         aria-label="Language selector"
       >
         {languages.map((lang) => (
@@ -28,9 +28,9 @@ export function LanguageSwitcher() {
           </option>
         ))}
       </select>
-      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
+      <div className="absolute right-1.5 sm:right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
         <svg
-          className="w-4 h-4 text-gray-500"
+          className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500 dark:text-gray-400"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

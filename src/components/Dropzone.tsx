@@ -86,8 +86,8 @@ export function Dropzone() {
         onDragLeave={handleDragLeave}
         className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
           isDragging
-            ? 'border-blue-500 bg-blue-50'
-            : 'border-gray-300 bg-white hover:border-gray-400'
+            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+            : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:border-gray-400 dark:hover:border-gray-500'
         }`}
       >
         <input
@@ -103,7 +103,7 @@ export function Dropzone() {
           className="cursor-pointer flex flex-col items-center gap-4"
         >
           <svg
-            className="w-16 h-16 text-gray-400"
+            className="w-16 h-16 text-gray-400 dark:text-gray-500"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -116,16 +116,16 @@ export function Dropzone() {
             />
           </svg>
           <div>
-            <p className="text-lg font-medium text-gray-700">
+            <p className="text-lg font-medium text-gray-700 dark:text-gray-300">
               {t('dropzone.dragDrop')}
             </p>
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
               {t('dropzone.orClick')}
             </p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
               {t('dropzone.supportedFormats')}
             </p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
               {t('dropzone.maxFileSize')}
             </p>
           </div>
@@ -133,9 +133,9 @@ export function Dropzone() {
       </div>
 
       {errors.length > 0 && (
-        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-sm font-medium text-red-800 mb-2">{t('dropzone.error')}</p>
-          <ul className="list-disc list-inside text-sm text-red-700 space-y-1">
+        <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <p className="text-sm font-medium text-red-800 dark:text-red-300 mb-2">{t('dropzone.error')}</p>
+          <ul className="list-disc list-inside text-sm text-red-700 dark:text-red-400 space-y-1">
             {errors.map((error, index) => (
               <li key={index}>{error}</li>
             ))}

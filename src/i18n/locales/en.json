@@ -87,6 +87,12 @@
   "footer": {
     "copyright": "ReImage. All rights reserved.",
     "version": "Version"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "selector": "Theme selector"
   }
 }
 

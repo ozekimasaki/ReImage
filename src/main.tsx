@@ -13,6 +13,10 @@ i18n.changeLanguage(savedLanguage)
 // HTMLのlang属性を更新
 document.documentElement.lang = savedLanguage
 
+// 保存されたテーマ設定を読み込んで適用
+const savedTheme = useAppStore.getState().settings.theme || 'system'
+useAppStore.getState().setTheme(savedTheme)
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />

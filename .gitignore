@@ -30,3 +30,8 @@ dist-ssr
 
 # Cursor IDE
 .cursor/
+
+# Deploy/Cloudflare Workers
+wrangler.jsonc
+worker/
+README-WORKER.md

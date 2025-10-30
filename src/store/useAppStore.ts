@@ -108,9 +108,17 @@ export const useAppStore = create<AppState>()(
         }),
 
       removeFile: (id) =>
-        set((state) => ({
-          files: state.files.filter((f) => f.id !== id),
-        })),
+        set((state) => {
+          const target = state.files.find((f) => f.id === id)
+          if (target?.preview && target.preview.startsWith('blob:')) {
+            try {
+              URL.revokeObjectURL(target.preview)
+            } catch {}
+          }
+          return {
+            files: state.files.filter((f) => f.id !== id),
+          }
+        }),
 
       updateFile: (id, updates) =>
         set((state) => ({
@@ -120,10 +128,20 @@ export const useAppStore = create<AppState>()(
         })),
 
       clearFiles: () =>
-        set({
-          files: [],
-          compareModalOpen: false,
-          compareFileId: undefined,
+        set((state) => {
+          // Revoke any preview object URLs
+          state.files.forEach((f) => {
+            if (f.preview && f.preview.startsWith('blob:')) {
+              try {
+                URL.revokeObjectURL(f.preview)
+              } catch {}
+            }
+          })
+          return {
+            files: [],
+            compareModalOpen: false,
+            compareFileId: undefined,
+          }
         }),
 
       setProcessing: (processing) =>

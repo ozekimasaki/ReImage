@@ -1,50 +1,159 @@
 import type { OutputFormat, CodecOptions } from '../types'
-import encodeAVIF from '@jsquash/avif/encode'
 
-// @jsquash/avifを使用したAVIFエンコード
-async function encodeAVIFWithJSSquash(
+// AVIFエンコードモジュールの遅延読み込み（動的インポート）
+// WASMファイルが大きいため、必要な時だけ読み込む
+let encodeAVIFModule: any = null
+let isAVIFLoading = false
+let avifLoadPromise: Promise<any> | null = null
+
+async function loadAVIFEncoder(): Promise<any> {
+  if (encodeAVIFModule) {
+    return encodeAVIFModule
+  }
+  
+  if (isAVIFLoading && avifLoadPromise) {
+    return avifLoadPromise
+  }
+  
+  isAVIFLoading = true
+  avifLoadPromise = import('@jsquash/avif/encode').then((module) => {
+    encodeAVIFModule = module.default || module
+    isAVIFLoading = false
+    return encodeAVIFModule
+  }).catch((error) => {
+    isAVIFLoading = false
+    avifLoadPromise = null
+    throw error
+  })
+  
+  return avifLoadPromise
+}
+
+// ブラウザがAVIFエンコードをサポートしているかチェック
+async function isAVIFSupported(): Promise<boolean> {
+  if (typeof OffscreenCanvas === 'undefined') {
+    return false
+  }
+  
+  try {
+    const canvas = new OffscreenCanvas(1, 1)
+    const blob = await canvas.convertToBlob({ type: 'image/avif' })
+    return blob.type === 'image/avif'
+  } catch {
+    return false
+  }
+}
+
+// ブラウザ側でAVIFエンコードを実行
+async function encodeAVIFInBrowser(
   imageData: ImageData,
   options: CodecOptions
 ): Promise<ArrayBuffer> {
   try {
-    // @jsquash/avifのencode関数はImageDataオブジェクトを受け取る
-    // 品質設定: 0-100をそのまま使用（@jsquash/avifは0-100の範囲をサポート）
-    const quality = options.quality !== undefined 
-      ? Math.max(0, Math.min(100, options.quality)) 
-      : 80
-    
-    // speedオプション（0-10、0が最高品質）
-    const speed = options.speed !== undefined ? options.speed : 4
-    
-    const encodeOptions: any = {
-      quality,
-      speed,
+    // ImageDataの検証
+    if (!imageData || !imageData.data || imageData.data.length === 0) {
+      throw new Error('無効な画像データです')
     }
+
+    if (imageData.width <= 0 || imageData.height <= 0) {
+      throw new Error('画像サイズが無効です')
+    }
+
+    // メモリ使用量の検証（大きすぎる画像の場合）
+    const pixelCount = imageData.width * imageData.height
+    const maxPixels = 100_000_000 // 1億ピクセル（約10000x10000）
+    if (pixelCount > maxPixels) {
+      throw new Error(`画像が大きすぎます（${imageData.width}×${imageData.height}px）。サイズを縮小してください。`)
+    }
+
+    // 品質設定: 0-100を0-1の範囲に変換（Canvas API用）
+    const quality = options.quality !== undefined 
+      ? Math.max(0, Math.min(100, options.quality)) / 100
+      : 0.8
+
+    // まずCanvas APIでAVIFエンコードを試行（ネイティブ、軽量、高速）
+    if (await isAVIFSupported()) {
+      try {
+        const canvas = new OffscreenCanvas(imageData.width, imageData.height)
+        const ctx = canvas.getContext('2d')
+        if (!ctx) {
+          throw new Error('Canvas context not available')
+        }
+
+        ctx.putImageData(imageData, 0, 0)
+
+        const blob = await canvas.convertToBlob({
+          type: 'image/avif',
+          quality: quality,
+        })
+
+        if (blob.type === 'image/avif') {
+          return blob.arrayBuffer()
+        }
+      } catch (canvasError) {
+        // Canvas APIでのエンコードに失敗した場合はWASMにフォールバック
+        console.warn('Canvas APIでのAVIFエンコードに失敗、WASMにフォールバック:', canvasError)
+      }
+    }
+
+    // Canvas APIがサポートされていない、または失敗した場合はWASMライブラリを使用
+    const speed = options.speed !== undefined 
+      ? options.speed 
+      : pixelCount > 10_000_000 ? 10 : 8
+
+    const encodeAVIF = await loadAVIFEncoder()
     
-    const encoded = await encodeAVIF(imageData, encodeOptions)
-    
+    const encodeAVIFFn = typeof encodeAVIF === 'function' 
+      ? encodeAVIF 
+      : (encodeAVIF as any).default || encodeAVIF
+
+    if (typeof encodeAVIFFn !== 'function') {
+      throw new Error('@jsquash/avif/encodeが正しく読み込まれていません')
+    }
+
+    // WASMライブラリでAVIFエンコードを実行
+    const encoded = await encodeAVIFFn(imageData, {
+      quality: options.quality !== undefined ? Math.max(0, Math.min(100, options.quality)) : 80,
+      speed,
+    })
+
     if (!encoded) {
       throw new Error('AVIFエンコード結果が空です')
     }
-    
-    // @jsquash/avifのencodeはArrayBufferまたはUint8Arrayを返す
+
+    // ArrayBufferまたはUint8ArrayをArrayBufferに変換
     if (encoded instanceof ArrayBuffer) {
-      if (encoded.byteLength === 0) {
-        throw new Error('AVIFエンコード結果が空です')
-      }
       return encoded
+    } else if (encoded instanceof Uint8Array) {
+      const copy = new Uint8Array(encoded)
+      return copy.buffer as ArrayBuffer
+    } else {
+      throw new Error('予期しないエンコード結果の形式です')
+    }
+  } catch (error) {
+    let errorMessage = 'AVIFエンコードに失敗しました'
+    
+    if (error instanceof Error) {
+      const message = error.message
+      
+      // 特定のエラーメッセージを日本語で分かりやすく
+      if (message.includes('timeout') || message.includes('タイムアウト')) {
+        errorMessage = 'AVIFエンコードがタイムアウトしました。画像サイズを縮小するか、品質を下げてください。'
+      } else if (message.includes('memory') || message.includes('メモリ')) {
+        errorMessage = 'メモリ不足によりAVIFエンコードに失敗しました。画像サイズを縮小してください。'
+      } else if (message.includes('WASM') || message.includes('wasm') || message.includes('WebAssembly')) {
+        errorMessage = 'WASMモジュールの読み込みに失敗しました。ブラウザがWebAssemblyをサポートしているか確認してください。'
+      } else if (message.includes('fetch') || message.includes('network') || message.includes('Network')) {
+        errorMessage = 'AVIFエンコード処理に失敗しました。ネットワーク接続を確認してください。'
+      } else {
+        errorMessage = `AVIFエンコードに失敗しました: ${message}`
+      }
+    } else if (typeof error === 'string') {
+      errorMessage = `AVIFエンコードに失敗しました: ${error}`
     }
     
-    // Uint8Arrayの場合は、新しいArrayBufferを作成して返す
-    const uint8Array = encoded as Uint8Array
-    if (uint8Array.byteLength === 0) {
-      throw new Error('AVIFエンコード結果が空です')
-    }
-    // 新しいUint8Arrayを作成して、そのbufferを返す（確実にArrayBufferを取得）
-    return new Uint8Array(uint8Array).buffer
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error)
-    throw new Error(`AVIFエンコードに失敗しました: ${errorMessage}`)
+    console.error('AVIFエンコードエラー詳細:', error)
+    throw new Error(errorMessage)
   }
 }
 
@@ -112,8 +221,9 @@ export function mapQualityToCodecOptions(
     case 'avif':
       // @jsquash/avif用の品質設定（0-100をそのまま使用）
       options.quality = Math.round(quality)
-      // speedオプション（0-10、デフォルトは6、低いほど高品質だが遅い）
-      options.speed = quality > 80 ? 2 : quality > 50 ? 4 : 6
+      // speedオプション（0-10、10が最速）
+      // パフォーマンス重視のため、常に高速設定を使用
+      options.speed = 10  // 最速設定でパフォーマンスを優先
       break
 
     case 'png':
@@ -135,9 +245,9 @@ export async function encodeImage(
   format: OutputFormat,
   options: CodecOptions
 ): Promise<EncodeResult> {
-  // AVIFの場合は@jsquash/avifを使用
+  // AVIFの場合はブラウザ側で@jsquash/avifを使用
   if (format === 'avif') {
-    const data = await encodeAVIFWithJSSquash(imageData, options)
+    const data = await encodeAVIFInBrowser(imageData, options)
     return { data, actualFormat: 'avif' }
   }
   

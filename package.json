@@ -10,8 +10,8 @@
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
-    "worker:dev": "wrangler dev",
-    "worker:deploy": "npm run build && wrangler deploy",
+    "worker:dev": "npx wrangler dev",
+    "worker:deploy": "npm run build && npx wrangler deploy",
     "worker:build": "tsc --project worker/tsconfig.json"
   },
   "dependencies": {
@@ -45,6 +45,6 @@
     "typescript": "^5.5.4",
     "vite": "^7.1.12",
     "vite-plugin-pwa": "^1.1.0",
-    "wrangler": "^3.80.0"
+    "wrangler": "^4.45.2"
   }
 }

@@ -1,8 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { AppSettings, ImageFile, Language, Theme } from '../types'
-import type { OutputFormat } from '../types'
-type Preset = AppSettings['preset']
 
 interface AppState {
   files: ImageFile[]

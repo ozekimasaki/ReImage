@@ -1,0 +1,92 @@
+{
+  "app": {
+    "title": "ReImage",
+    "subtitle": "ブラウザ内で画像をリサイズ・圧縮"
+  },
+  "header": {
+    "title": "ReImage",
+    "subtitle": "ブラウザ内で画像をリサイズ・圧縮"
+  },
+  "dropzone": {
+    "dragDrop": "画像をドラッグ＆ドロップ",
+    "orClick": "またはクリックしてファイルを選択",
+    "supportedFormats": "JPG, PNG, WebP, AVIF に対応",
+    "maxFileSize": "最大ファイルサイズ: 50MB（ブラウザ処理の制限による）",
+    "error": "エラー:"
+  },
+  "fileList": {
+    "title": "ファイル一覧",
+    "status": {
+      "completed": "完了",
+      "processing": "処理中",
+      "error": "エラー",
+      "pending": "待機中"
+    },
+    "originalSize": "元サイズ",
+    "converted": "変換後",
+    "reductionRate": "削減率",
+    "compare": "比較",
+    "delete": "削除"
+  },
+  "settings": {
+    "title": "設定",
+    "preset": "プリセット",
+    "presets": {
+      "highQuality": "高画質",
+      "balanced": "バランス",
+      "highCompression": "高圧縮"
+    },
+    "outputFormat": "出力形式",
+    "outputFormats": {
+      "original": "元の形式を維持",
+      "jpg": "JPEG",
+      "png": "PNG",
+      "webp": "WebP",
+      "avif": "AVIF"
+    },
+    "quality": "品質",
+    "qualityRange": {
+      "low": "低品質",
+      "high": "高品質"
+    },
+    "maxDimension": "最大長辺 (px)",
+    "maxDimensionHint": "この値より大きい画像は縮小されます",
+    "nearLossless": "Near-lossless（高品質圧縮）",
+    "nearLosslessHint": "より高い品質を維持しますが、ファイルサイズは大きくなります"
+  },
+  "processButton": {
+    "processing": "処理中...",
+    "downloadZip": "ZIP でダウンロード",
+    "downloadZipCount": "ZIP でダウンロード ({{count}}件)"
+  },
+  "compareModal": {
+    "originalImage": "元画像",
+    "convertedImage": "変換後",
+    "originalSize": "元サイズ",
+    "convertedSize": "変換後",
+    "reductionRate": "削減率",
+    "close": "閉じる (ESC)",
+    "zoom": "ズーム",
+    "reset": "リセット",
+    "hints": {
+      "wheel": "ホイール: ズーム",
+      "drag": "ドラッグ: パン",
+      "switch": "←/→: 切り替え",
+      "reset": "0/Home: リセット"
+    },
+    "switchToOriginal": "元画像を表示 (←)",
+    "switchToConverted": "変換後を表示 (→)",
+    "zoomOut": "縮小",
+    "zoomIn": "拡大"
+  },
+  "validation": {
+    "unsupportedFormat": "対応していないファイル形式です",
+    "fileTooLarge": "ファイルサイズが大きすぎます",
+    "maxSize": "最大50MB"
+  },
+  "footer": {
+    "copyright": "ReImage. All rights reserved.",
+    "version": "バージョン"
+  }
+}
+

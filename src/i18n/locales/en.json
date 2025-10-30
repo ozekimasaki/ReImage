@@ -1,0 +1,92 @@
+{
+  "app": {
+    "title": "ReImage",
+    "subtitle": "Resize and compress images in your browser"
+  },
+  "header": {
+    "title": "ReImage",
+    "subtitle": "Resize and compress images in your browser"
+  },
+  "dropzone": {
+    "dragDrop": "Drag & drop images here",
+    "orClick": "or click to select files",
+    "supportedFormats": "Supports JPG, PNG, WebP, AVIF",
+    "maxFileSize": "Maximum file size: 50MB (browser processing limit)",
+    "error": "Error:"
+  },
+  "fileList": {
+    "title": "File List",
+    "status": {
+      "completed": "Completed",
+      "processing": "Processing",
+      "error": "Error",
+      "pending": "Pending"
+    },
+    "originalSize": "Original size",
+    "converted": "Converted",
+    "reductionRate": "Reduction rate",
+    "compare": "Compare",
+    "delete": "Delete"
+  },
+  "settings": {
+    "title": "Settings",
+    "preset": "Preset",
+    "presets": {
+      "highQuality": "High Quality",
+      "balanced": "Balanced",
+      "highCompression": "High Compression"
+    },
+    "outputFormat": "Output Format",
+    "outputFormats": {
+      "original": "Keep original format",
+      "jpg": "JPEG",
+      "png": "PNG",
+      "webp": "WebP",
+      "avif": "AVIF"
+    },
+    "quality": "Quality",
+    "qualityRange": {
+      "low": "Low quality",
+      "high": "High quality"
+    },
+    "maxDimension": "Max dimension (px)",
+    "maxDimensionHint": "Images larger than this value will be resized",
+    "nearLossless": "Near-lossless (high quality compression)",
+    "nearLosslessHint": "Maintains higher quality but increases file size"
+  },
+  "processButton": {
+    "processing": "Processing...",
+    "downloadZip": "Download as ZIP",
+    "downloadZipCount": "Download as ZIP ({{count}} files)"
+  },
+  "compareModal": {
+    "originalImage": "Original Image",
+    "convertedImage": "Converted",
+    "originalSize": "Original size",
+    "convertedSize": "Converted",
+    "reductionRate": "Reduction rate",
+    "close": "Close (ESC)",
+    "zoom": "Zoom",
+    "reset": "Reset",
+    "hints": {
+      "wheel": "Wheel: Zoom",
+      "drag": "Drag: Pan",
+      "switch": "←/→: Switch",
+      "reset": "0/Home: Reset"
+    },
+    "switchToOriginal": "Show original image (←)",
+    "switchToConverted": "Show converted image (→)",
+    "zoomOut": "Zoom out",
+    "zoomIn": "Zoom in"
+  },
+  "validation": {
+    "unsupportedFormat": "Unsupported file format",
+    "fileTooLarge": "File size is too large",
+    "maxSize": "Maximum 50MB"
+  },
+  "footer": {
+    "copyright": "ReImage. All rights reserved.",
+    "version": "Version"
+  }
+}
+

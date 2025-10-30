@@ -13,20 +13,21 @@ async function processSingleImage(fileId: string) {
   if (!file || file.status !== 'pending') return
 
   const settings = state.settings
+  let imageBitmap: ImageBitmap | null = null
+  
+  // 出力形式を決定（エラーハンドリングでも使用するため先に定義）
+  const outputFormat: OutputFormat =
+    settings.outputFormat === 'original'
+      ? (file.file.type.split('/')[1] as OutputFormat) || 'jpg'
+      : settings.outputFormat
 
   try {
     state.updateFile(fileId, { status: 'processing', progress: 0 })
 
     // 画像読み込み
     state.updateFile(fileId, { progress: 10 })
-    const { imageBitmap } =
-      await loadImageWithOrientation(file.file)
-
-    // 出力形式を決定
-    const outputFormat: OutputFormat =
-      settings.outputFormat === 'original'
-        ? (file.file.type.split('/')[1] as OutputFormat) || 'jpg'
-        : settings.outputFormat
+    const result = await loadImageWithOrientation(file.file)
+    imageBitmap = result.imageBitmap
 
     // リサイズ
     state.updateFile(fileId, { progress: 30 })
@@ -88,12 +89,42 @@ async function processSingleImage(fileId: string) {
     
     if (error instanceof Error) {
       errorMessage = error.message
-      // AVIFエラーの場合、より分かりやすいメッセージに変換
-      if (errorMessage.includes('AVIF')) {
-        console.error('AVIFエンコードエラー:', error)
+      
+      // AVIFエラーの場合、より詳細なログを出力
+      if (errorMessage.includes('AVIF') || outputFormat === 'avif') {
+        console.error('AVIFエンコードエラー詳細:', {
+          message: error.message,
+          stack: error.stack,
+          fileId,
+          fileName: file.file.name,
+          fileSize: file.file.size,
+          imageSize: imageBitmap ? `${imageBitmap.width}×${imageBitmap.height}` : 'unknown',
+        })
+        
+        // AVIF固有のエラーメッセージ改善
+        if (errorMessage.includes('タイムアウト')) {
+          errorMessage = 'AVIF変換がタイムアウトしました。画像サイズを縮小するか、品質を下げてください。'
+        } else if (errorMessage.includes('メモリ')) {
+          errorMessage = 'メモリ不足によりAVIF変換に失敗しました。画像サイズを縮小してください。'
+        } else if (!errorMessage.includes('AVIF')) {
+          errorMessage = `AVIF変換エラー: ${errorMessage}`
+        }
       }
     } else if (typeof error === 'string') {
       errorMessage = error
+    } else {
+      // 予期しないエラー形式の場合
+      errorMessage = `予期しないエラーが発生しました: ${String(error)}`
+      console.error('予期しないエラー形式:', error)
+    }
+    
+    // ImageBitmapが開いている場合はクリーンアップ
+    if (imageBitmap) {
+      try {
+        imageBitmap.close()
+      } catch (closeError) {
+        console.warn('ImageBitmapのクローズエラー:', closeError)
+      }
     }
     
     state.updateFile(fileId, {

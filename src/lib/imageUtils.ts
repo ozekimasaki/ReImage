@@ -21,12 +21,18 @@ export async function loadImageWithOrientation(
 }
 
 export function createPreviewUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(reader.result as string)
-    reader.onerror = reject
-    reader.readAsDataURL(file)
-  })
+  // Prefer Object URL for memory/perf; fallback to DataURL if it fails
+  try {
+    const url = URL.createObjectURL(file)
+    return Promise.resolve(url)
+  } catch {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+  }
 }
 
 export function formatFileSize(bytes: number): string {

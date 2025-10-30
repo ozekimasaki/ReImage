@@ -11,7 +11,7 @@
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3-38B2AC?logo=tailwindcss&logoColor=white)
 ![PWA](https://img.shields.io/badge/PWA-ready-5A0FC8)
 ![i18n](https://img.shields.io/badge/i18n-en%2Fja%2Fzh-ff69b4)
-![Cloudflare Workers](https://img.shields.io/badge/Cloudflare%20Workers-optional-F38020?logo=cloudflareworkers&logoColor=white)
+![Cloudflare Workers](https://img.shields.io/badge/Cloudflare%20Workers-hosting-F38020?logo=cloudflareworkers&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 ## 機能
@@ -75,17 +75,9 @@ npm run format
 
 推奨出力形式はデフォルトの `webp`（高圧縮・互換性のバランス）。最高圧縮を狙う場合は `avif` を選択してください（環境により処理時間が増えることがあります）。
 
-## Cloudflare Workers（任意）
+## エラーメッセージについて
 
-ブラウザ内のAVIFエンコード（WASM）が重い場合、Cloudflare Workersに処理をオフロードできます。詳細手順と `.env` 設定は `README-WORKER.md` を参照してください。
-
-- `.env` 例（ルート直下）
-
-```env
-VITE_CLOUDFLARE_WORKER_URL=https://your-worker.your-account.workers.dev
-```
-
-> 注意: 現時点の実装はブラウザ内エンコードが既定です。Workers連携はオプションとして利用/拡張できます。
+AVIF 変換で失敗した場合は、原因に応じた日本語のエラーメッセージを表示します（タイムアウト/メモリ不足/WASM 読み込み失敗など）。調整案としては「画像サイズの縮小」「品質の引き下げ」をお試しください。
 
 ## ディレクトリ構成（抜粋）
 
@@ -98,7 +90,7 @@ src/
   store/           Zustandストア
   index.css        Tailwind
   main.tsx         エントリ
-worker/            Cloudflare Worker（任意）
+  worker/          Cloudflare Workers（静的ホスティング）
 ```
 
 ## ブラウザ互換性のヒント

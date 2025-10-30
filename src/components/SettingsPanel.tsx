@@ -1,7 +1,10 @@
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useAppStore, Preset, OutputFormat } from '../store/useAppStore'
+import { useAppStore } from '../store/useAppStore'
+import type { AppSettings, OutputFormat } from '../types'
 import { processAllImages } from '../lib/processor'
+
+type Preset = AppSettings['preset']
 
 const PRESETS: Record<Preset, { quality: number; maxDimension: number }> = {
   'high-quality': { quality: 95, maxDimension: 4096 },
@@ -17,7 +20,7 @@ export function SettingsPanel() {
   const isProcessing = useAppStore((state) => state.isProcessing)
   const setProcessing = useAppStore((state) => state.setProcessing)
   const prevSettingsRef = useRef(settings)
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // 設定変更時に自動再変換を実行
   useEffect(() => {

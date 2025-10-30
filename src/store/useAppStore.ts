@@ -1,40 +1,8 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-
-export type OutputFormat = 'jpg' | 'png' | 'webp' | 'avif' | 'original'
-
-export type Preset = 'high-quality' | 'balanced' | 'high-compression'
-
-export type Language = 'en' | 'ja' | 'zh'
-
-export type Theme = 'light' | 'dark' | 'system'
-
-export interface ImageFile {
-  id: string
-  file: File
-  preview?: string
-  processed?: {
-    blob: Blob
-    format: OutputFormat
-    width: number
-    height: number
-    size: number
-    originalSize: number
-  }
-  progress: number
-  status: 'pending' | 'processing' | 'completed' | 'error'
-  error?: string
-}
-
-export interface AppSettings {
-  preset: Preset
-  outputFormat: OutputFormat
-  quality: number
-  maxDimension: number
-  nearLossless?: boolean
-  language?: Language
-  theme?: Theme
-}
+import type { AppSettings, ImageFile, Language, Theme } from '../types'
+import type { OutputFormat } from '../types'
+type Preset = AppSettings['preset']
 
 interface AppState {
   files: ImageFile[]

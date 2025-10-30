@@ -1,5 +1,5 @@
 import { zip } from 'fflate'
-import type { ImageFile } from '../store/useAppStore'
+import type { ImageFile } from '../types'
 import { useAppStore } from '../store/useAppStore'
 
 function getOutputFilename(

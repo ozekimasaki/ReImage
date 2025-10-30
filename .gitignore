@@ -29,9 +29,13 @@ dist-ssr
 *.sw?
 
 # Cursor IDE
+<<<<<<< HEAD
 .cursor/
 
 # Deploy/Cloudflare Workers
 wrangler.jsonc
 worker/
 README-WORKER.md
+=======
+.cursor/
+>>>>>>> 34a8db2 (chore: .cursorフォルダをGit管理から除外)

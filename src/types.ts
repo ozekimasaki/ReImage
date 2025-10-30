@@ -27,3 +27,34 @@ export interface ProcessResult {
   originalSize: number
 }
 
+// App-wide shared types (moved from store to avoid duplication)
+export type Language = 'en' | 'ja' | 'zh'
+export type Theme = 'light' | 'dark' | 'system'
+
+export interface AppSettings {
+  preset: 'high-quality' | 'balanced' | 'high-compression'
+  outputFormat: OutputFormat
+  quality: number
+  maxDimension: number
+  nearLossless?: boolean
+  language?: Language
+  theme?: Theme
+}
+
+export interface ImageFile {
+  id: string
+  file: File
+  preview?: string
+  processed?: {
+    blob: Blob
+    format: OutputFormat
+    width: number
+    height: number
+    size: number
+    originalSize: number
+  }
+  progress: number
+  status: 'pending' | 'processing' | 'completed' | 'error'
+  error?: string
+}
+

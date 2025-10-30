@@ -7,6 +7,15 @@ import {
 } from './codecs'
 import type { OutputFormat } from '../types'
 
+function mimeToOutputFormat(mimeType: string): OutputFormat {
+  const lower = (mimeType || '').toLowerCase()
+  if (lower.includes('jpeg') || lower.includes('jpg')) return 'jpg'
+  if (lower.includes('png')) return 'png'
+  if (lower.includes('webp')) return 'webp'
+  if (lower.includes('avif')) return 'avif'
+  return 'jpg'
+}
+
 async function processSingleImage(fileId: string) {
   const state = useAppStore.getState()
   const file = state.files.find((f) => f.id === fileId)
@@ -18,7 +27,7 @@ async function processSingleImage(fileId: string) {
   // 出力形式を決定（エラーハンドリングでも使用するため先に定義）
   const outputFormat: OutputFormat =
     settings.outputFormat === 'original'
-      ? (file.file.type.split('/')[1] as OutputFormat) || 'jpg'
+      ? mimeToOutputFormat(file.file.type)
       : settings.outputFormat
 
   try {
@@ -139,7 +148,8 @@ export async function processAllImages() {
   const pendingFiles = state.files.filter((f) => f.status === 'pending')
 
   // CPUコア数に基づいて並列数を決定
-  const maxWorkers = Math.max(1, navigator.hardwareConcurrency - 1)
+  const cores = typeof navigator !== 'undefined' && (navigator as any).hardwareConcurrency ? (navigator as any).hardwareConcurrency as number : 2
+  const maxWorkers = Math.max(1, cores - 1)
   const workers = Math.min(maxWorkers, pendingFiles.length)
 
   // バッチ処理（並列実行）

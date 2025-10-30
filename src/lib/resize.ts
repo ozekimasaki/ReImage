@@ -9,8 +9,10 @@ async function getPica() {
   return picaInstance
 }
 
+type CanvasLike = OffscreenCanvas | HTMLCanvasElement
+
 export interface ResizeResult {
-  canvas: OffscreenCanvas
+  canvas: CanvasLike
   width: number
   height: number
 }
@@ -22,8 +24,18 @@ export async function resizeImage(
   const { width, height } = imageBitmap
 
   // リサイズ不要な場合
+  const createCanvas = (w: number, h: number): CanvasLike => {
+    if (typeof OffscreenCanvas !== 'undefined') {
+      return new OffscreenCanvas(w, h)
+    }
+    const c = document.createElement('canvas')
+    c.width = w
+    c.height = h
+    return c
+  }
+
   if (width <= maxDimension && height <= maxDimension) {
-    const canvas = new OffscreenCanvas(width, height)
+    const canvas = createCanvas(width, height)
     const ctx = canvas.getContext('2d')
     if (!ctx) {
       throw new Error('Canvas context not available')
@@ -48,7 +60,7 @@ export async function resizeImage(
     }
   }
 
-  const canvas = new OffscreenCanvas(newWidth, newHeight)
+  const canvas = createCanvas(newWidth, newHeight)
 
   // Picaを使用して高品質リサイズ
   const pica = await getPica()

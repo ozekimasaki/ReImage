@@ -45,6 +45,8 @@
 npm install
 ```
 
+環境変数を使う場合は `.env.example` を参考に `.env` を作成します（Cloudflare Worker のデプロイを行う場合のみ `VITE_CLOUDFLARE_WORKER_URL` を設定）。
+
 ### 開発
 
 ```bash
@@ -61,8 +63,18 @@ npm run preview
 ### コード品質
 
 ```bash
-npm run lint
-npm run format
+npm run lint     # ESLint（--max-warnings 0 のため警告もエラー扱い）
+npm run format   # Prettier で src/**/*.{ts,tsx,css} を整形
+```
+
+### Cloudflare Workers（任意）
+
+静的ホスティングを Cloudflare Workers にデプロイするための補助スクリプトです。デプロイ関連ファイル（`worker/`, `wrangler.jsonc` など）は `.gitignore` で除外されており、本リポジトリには含まれません。利用する場合は別途これらを用意してください。
+
+```bash
+npm run worker:dev      # wrangler dev（ローカル起動）
+npm run worker:build    # worker/tsconfig.json でビルド
+npm run worker:deploy   # ビルドして wrangler deploy
 ```
 
 ## 使い方
@@ -83,15 +95,19 @@ AVIF 変換で失敗した場合は、原因に応じた日本語のエラーメ
 
 ```text
 src/
-  components/      UIコンポーネント
-  lib/             画像処理（リサイズ・エンコード・ZIP）
-  i18n/            多言語リソース
+  components/      UIコンポーネント（Dropzone, FileList, SettingsPanel, CompareModal など）
+  lib/             画像処理（processor / codecs / resize / zip / imageUtils / validation / errorHandling）
+  i18n/            多言語リソース（en / ja / zh）と初期化
   pages/           画面コンテナ（`App.tsx`）
-  store/           Zustandストア
-  index.css        Tailwind
-  main.tsx         エントリ
-  worker/          Cloudflare Workers（静的ホスティング）
+  store/           Zustand ストア（`useAppStore.ts`）
+  types.ts         共有型定義
+  index.css        Tailwind エントリ
+  main.tsx         アプリのエントリポイント
+index.html         Vite のエントリ HTML
+vite.config.ts     Vite / PWA 設定
 ```
+
+Cloudflare Workers 用のデプロイファイル（`worker/`, `wrangler.jsonc` など）は `.gitignore` により Git 管理外です。
 
 ## ブラウザ互換性のヒント
 
